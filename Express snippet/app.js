@@ -11,8 +11,26 @@ var successRouter = require('./routes/success');
 var passport = require('passport');
 var session = require('express-session');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-
 var app = express();
+const mongoose = require('mongoose');
+const User  = require('./model/user');
+
+const connection = (async function(){
+  const connection = await mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+  });
+  return connection
+})();
+
+connection.then(()=>{
+  console.log('Successfully connected to DB')
+}).catch(err=>{
+  console.log('Error connecting to DB ',err)
+})
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -64,10 +82,11 @@ passport.use(new GoogleStrategy({
 },
   function (accessToken, refreshToken, profile, done) {
     userData = profile;
-    return done(null, profile)
-    //  User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    //    return done(err, user);
-    //  });
+    // return done(null, profile)
+    User.findOrCreate({ googleId: profile.id, name:profile.displayName}, function (err, user) {
+      console.log('errrrrr ', err)
+      return done(err, user);
+    });
   }
 ));
 
