@@ -3,10 +3,12 @@ var router = express.Router();
 
 /* GET success page. */
 router.get('/', function(req, res, next) {
+  console.log('innnn')
   // console.log('session ', req.session)
-  res.render('success',{
-    user:req.session.loginUserData
-  });
+  // {
+  //   user:req.session.loginUserData
+  // }
+  res.render('success',{});
 });
 
 module.exports = router;

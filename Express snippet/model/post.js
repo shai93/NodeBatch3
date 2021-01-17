@@ -10,6 +10,9 @@ const PostSchema = new mongoose.Schema({
     content:{
         type:String
     },
+    userId:{
+        type:String
+    },
     image:{
         type:String
     }

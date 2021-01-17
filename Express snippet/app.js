@@ -8,12 +8,14 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var photoRouter = require('./routes/photos');
 var successRouter = require('./routes/success');
+var postRouter = require('./routes/postRouter');
 var passport = require('passport');
 var session = require('express-session');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var app = express();
 const mongoose = require('mongoose');
 const User  = require('./model/user');
+var bodyParser = require('body-parser')
 
 const connection = (async function(){
   const connection = await mongoose.connect(process.env.MONGO_URL, {
@@ -31,9 +33,14 @@ connection.then(()=>{
   console.log('Error connecting to DB ',err)
 })
 
-
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+ 
+// parse application/json
+app.use(bodyParser.json())
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 var userData;
 // view engine setup
@@ -56,6 +63,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/photos', photoRouter);
 app.use('/success', successRouter);
+app.use('/post', postRouter);
+
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
