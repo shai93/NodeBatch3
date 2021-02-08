@@ -15,7 +15,8 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var app = express();
 const mongoose = require('mongoose');
 const User  = require('./model/user');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+const expressUpload = require('express-fileupload');
 
 const connection = (async function(){
   const connection = await mongoose.connect(process.env.MONGO_URL, {
@@ -40,6 +41,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(expressUpload());
 
 
 var userData;
